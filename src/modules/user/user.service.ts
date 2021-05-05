@@ -1,9 +1,14 @@
 import { Injectable } from '@nestjs/common'
-import { UserKeyDto } from './user.dto'
+import { UserProvider } from './user.enum'
+import { User } from './user.model'
 
+type UserKeyType = {
+	provider: UserProvider
+	id: string
+}
 @Injectable()
 export class UserService {
-	async get({ id, provider }: UserKeyDto) {
-		return `${provider}:${id}` as const
+	async get({ id, provider }: UserKeyType): Promise<User> {
+		return { id, provider }
 	}
 }
