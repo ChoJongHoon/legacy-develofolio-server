@@ -4,7 +4,6 @@ import {
 	HttpStatus,
 	Injectable,
 } from '@nestjs/common'
-import { GithubCodeDto } from './auth.dto'
 
 export type GithubUserTypes = {
 	githubId: string
