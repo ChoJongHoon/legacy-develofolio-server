@@ -1,0 +1,61 @@
+service: develofolio
+
+frameworkVersion: '2'
+
+useDotenv: true
+
+plugins:
+  - serverless-offline
+  - serverless-plugin-typescript
+  - serverless-dynamodb-local
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  lambdaHashingVersion: 20201221
+  stage: ${opt:stage, 'dev'}
+  profile: ${env:AWS_PROFILE}
+  region: ${opt:region, 'ap-northeast-2'}
+  environment:
+    SERVICE: ${self:service}
+    STAGE: ${self:provider.stage}
+    REGION: ${self:provider.region}
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - dynamodb:PutItem
+            - dynamodb:Scan
+            - dynamodb:GetItem
+            - dynamodb:UpdateItem
+            - dynamodb:Query
+          Resource: arn:aws:dynamodb:${self:provider.region}:*:*
+
+# remove the unnecessary packages to keep small upload size
+package:
+  patterns:
+    - '!node_modules/typescript/**'
+    - '!node_modules/@types/**'
+
+custom:
+  dynamodb:
+    stages:
+      - ${self:provider.stage}
+    start:
+      port: 8000
+      inMemory: true
+      migrate: true
+      seed: false
+
+functions:
+  index-function:
+    handler: src/serverless.handler
+    events:
+      - http:
+          cors: true
+          path: '{proxy+}'
+          method: any
+
+resources:
+  - ${file(resource/dynamodb.yml)}
