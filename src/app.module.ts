@@ -22,7 +22,7 @@ import { UserModule } from './modules/user/user.module'
 					region: 'ap-northeast-2',
 				},
 				model: {
-					create: true,
+					create: false,
 					prefix: `${configService.get('SERVICE')}-${configService.get(
 						'STAGE'
 					)}-`,
