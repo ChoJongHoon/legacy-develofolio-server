@@ -1,17 +1,19 @@
-import { Args, Query, Resolver } from '@nestjs/graphql'
-import { UserProvider } from './user.enum'
-import { User } from './user.model'
+import { Args, ID, Mutation, Query, Resolver } from '@nestjs/graphql'
+import { User } from './model/user.model'
 import { UserService } from './user.service'
+import { CreateUserInput } from './model/create-user.input'
 
 @Resolver()
 export class UserResolver {
 	constructor(readonly userService: UserService) {}
 
-	@Query(() => User)
-	async test(
-		@Args('provider', { type: () => UserProvider }) provider: UserProvider,
-		@Args('id', { type: () => String }) id: string
-	) {
-		return this.userService.get({ id, provider })
+	@Query(/* istanbul ignore next */ () => User)
+	user(@Args('id', { type: /* istanbul ignore next */ () => ID }) id: string) {
+		return this.userService.findOne({ id })
+	}
+
+	@Mutation(/* istanbul ignore next */ () => User)
+	createUser(@Args('input') input: CreateUserInput) {
+		return this.userService.create(input)
 	}
 }
