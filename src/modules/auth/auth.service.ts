@@ -4,6 +4,7 @@ import {
 	HttpStatus,
 	Injectable,
 } from '@nestjs/common'
+import { UserService } from '../user/user.service'
 
 export type GithubUserTypes = {
 	githubId: string
@@ -28,7 +29,10 @@ export type GithubUserResponse = {
 
 @Injectable()
 export class AuthService {
-	constructor(private readonly httpService: HttpService) {}
+	constructor(
+		private readonly httpService: HttpService,
+		private usersService: UserService
+	) {}
 
 	public async getGithubAccessToken(code: string) {
 		const getTokenUrl = 'https://github.com/login/oauth/access_token'

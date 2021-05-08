@@ -12,6 +12,11 @@ export class CreateUserInput {
 
 	@IsNotEmpty()
 	@IsString()
+	@Field(/* istanbul ignore next */ () => String)
+	providedId: string
+
+	@IsNotEmpty()
+	@IsString()
 	@Field()
 	username: string
 }

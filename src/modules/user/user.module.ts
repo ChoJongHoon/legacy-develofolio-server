@@ -7,5 +7,6 @@ import { UserService } from './user.service'
 @Module({
 	imports: [DynamooseModule.forFeature([{ name: 'user', schema: UserSchema }])],
 	providers: [UserService, UserResolver],
+	exports: [UserService],
 })
 export class UserModule {}
