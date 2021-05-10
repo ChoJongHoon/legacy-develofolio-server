@@ -4,25 +4,36 @@ import { GraphQLModule } from '@nestjs/graphql'
 import { DynamooseModule } from 'nestjs-dynamoose'
 import { AuthModule } from './modules/auth/auth.module'
 import { UserModule } from './modules/user/user.module'
+
 @Module({
 	imports: [
-		GraphQLModule.forRoot({
-			autoSchemaFile: true,
-			playground: true,
+		GraphQLModule.forRootAsync({
+			inject: [ConfigService],
+			useFactory: (configService: ConfigService) => ({
+				autoSchemaFile: true,
+				playground: true,
+				context: ({ req, res }) => {
+					return { req, res }
+				},
+				cors: {
+					origin: configService.get('CLIENT'),
+					credentials: true,
+				},
+			}),
 		}),
 		ConfigModule.forRoot({
 			isGlobal: true,
 		}),
 		DynamooseModule.forRootAsync({
 			useFactory: async (configService: ConfigService) => ({
-				// local: true,
+				local: false,
 				aws: {
 					accessKeyId: configService.get('AWS_ACCESS_KEY_ID'),
 					secretAccessKey: configService.get('AWS_SECRET_ACCESS_KEY'),
 					region: 'ap-northeast-2',
 				},
 				model: {
-					create: false,
+					create: true,
 					prefix: `${configService.get('SERVICE')}-${configService.get(
 						'STAGE'
 					)}-`,

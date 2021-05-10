@@ -5,10 +5,17 @@ export const UserSchema = new Schema({
 		type: String,
 		hashKey: true,
 	},
-	username: {
+	provider: {
 		type: String,
 	},
-	provider: {
+	providedId: {
+		type: String,
+		index: {
+			global: true,
+			rangeKey: 'provider',
+		},
+	},
+	username: {
 		type: String,
 	},
 	createAt: {

@@ -1,7 +1,7 @@
 import { registerEnumType } from '@nestjs/graphql'
 
 enum UserProvider {
-	GITHUB = 'GITHUB',
+	github = 'github',
 }
 
 registerEnumType(UserProvider, {

@@ -1,6 +1,6 @@
 import { Field, InputType, InterfaceType } from '@nestjs/graphql'
 import { IsEnum, IsNotEmpty, IsString } from 'class-validator'
-import { UserProvider } from '../user.enum'
+import { UserProvider } from '../enum/user-provider.enum'
 
 @InputType()
 @InterfaceType('BaseUser')
@@ -14,9 +14,4 @@ export class CreateUserInput {
 	@IsString()
 	@Field(/* istanbul ignore next */ () => String)
 	providedId: string
-
-	@IsNotEmpty()
-	@IsString()
-	@Field()
-	username: string
 }

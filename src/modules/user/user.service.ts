@@ -11,10 +11,6 @@ export class UserService {
 		private readonly model: Model<User, UserKey>
 	) {}
 
-	// async get({ id, provider }: UserKeyType): Promise<User> {
-	// 	return { id, provider }
-	// }
-
 	create(input: CreateUserInput) {
 		return this.model.create({
 			...input,
@@ -25,5 +21,26 @@ export class UserService {
 
 	findOne(key: UserKey) {
 		return this.model.get(key)
+	}
+
+	async findOrCreate(input: CreateUserInput) {
+		let user = (
+			await this.model
+				.query('providedId')
+				.eq(input.providedId)
+				.where('provider')
+				.eq(input.provider)
+				.exec()
+		)[0]
+
+		if (!user) {
+			user = await this.model.create({
+				...input,
+				id: uuid(),
+				createAt: new Date().toISOString(),
+			})
+		}
+
+		return user
 	}
 }

@@ -1,92 +1,72 @@
+import { Injectable } from '@nestjs/common'
+import { ConfigService } from '@nestjs/config'
+import { JwtService } from '@nestjs/jwt'
 import {
-	HttpException,
-	HttpService,
-	HttpStatus,
-	Injectable,
-} from '@nestjs/common'
-import { UserService } from '../user/user.service'
-
-export type GithubUserTypes = {
-	githubId: string
-	avatar: string
-	name: string
-	description: string
-	location: string
-}
-
-export type GithubOAuthResponse = {
-	error?: any
-	access_token: string
-}
-
-export type GithubUserResponse = {
-	login: string
-	avatar_url: string
-	name: string
-	bio: string
-	company: string
-}
+	AccessTokenPayload,
+	RefreshTokenPayload,
+} from './interface/token.interface'
 
 @Injectable()
 export class AuthService {
 	constructor(
-		private readonly httpService: HttpService,
-		private usersService: UserService
+		private jwtService: JwtService,
+		private configService: ConfigService
 	) {}
 
-	public async getGithubAccessToken(code: string) {
-		const getTokenUrl = 'https://github.com/login/oauth/access_token'
-		// 깃허브 access token을 얻기위한 요청 API 주소
+	public getCookieWithJwtAccessToken(uid: string) {
+		const payload: AccessTokenPayload = { uid }
+		const token = this.jwtService.sign(payload, {
+			secret: this.configService.get('JWT_ACCESS_TOKEN_SECRET'),
+			expiresIn: `${this.configService.get(
+				'JWT_ACCESS_TOKEN_EXPIRATION_TIME'
+			)}s`,
+		})
 
-		const request = {
-			code,
-			client_id: process.env.GITHUB_CLIENT_ID,
-			client_secret: process.env.GITHUB_CLIENT_SECRET,
+		return {
+			accessToken: token,
+			domain: 'localhost',
+			path: '/',
+			httpOnly: true,
+			maxAge:
+				Number(this.configService.get('JWT_ACCESS_TOKEN_EXPIRATION_TIME')) *
+				1000,
 		}
-		// Body에는 Client ID, Client Secret, 웹에서 query string으로 받은 code를 넣어서 전달해주어야 합니다.
-		const response = await this.httpService
-			.post<GithubOAuthResponse>(getTokenUrl, request, {
-				headers: {
-					accept: 'application/json', // json으로 반환을 요청합니다.
-				},
-			})
-			.toPromise()
-
-		if (response.data.error) {
-			// 에러 발생시
-			throw new HttpException(
-				'깃허브 인증을 실패했습니다.',
-				HttpStatus.UNAUTHORIZED
-			)
-		}
-
-		const { access_token } = response.data
-		// 요청이 성공한다면, access_token 키값의 토큰을 깃허브에서 넘겨줍니다.
-
-		return access_token
 	}
 
-	public async getGithubProfile(accessToken: string): Promise<GithubUserTypes> {
-		const getUserUrl = 'https://api.github.com/user'
+	public getCookieWithJwtRefreshToken(uid: string) {
+		const payload: RefreshTokenPayload = { uid }
+		const token = this.jwtService.sign(payload, {
+			secret: this.configService.get('JWT_REFRESH_TOKEN_SECRET'),
+			expiresIn: `${this.configService.get(
+				'JWT_REFRESH_TOKEN_EXPIRATION_TIME'
+			)}s`,
+		})
 
-		const { data } = await this.httpService
-			.get(getUserUrl, {
-				headers: {
-					Authorization: `token ${accessToken}`,
-				},
-			})
-			.toPromise()
-
-		const { login, avatar_url, name, bio, company } = data
-
-		const githubInfo: GithubUserTypes = {
-			githubId: login,
-			avatar: avatar_url,
-			name,
-			description: bio,
-			location: company,
+		return {
+			refreshToken: token,
+			domain: 'localhost',
+			path: '/',
+			httpOnly: true,
+			maxAge:
+				Number(this.configService.get('JWT_REFRESH_TOKEN_EXPIRATION_TIME')) *
+				1000,
 		}
+	}
 
-		return githubInfo
+	getCookiesForLogOut() {
+		return {
+			accessOption: {
+				domain: 'localhost',
+				path: '/',
+				httpOnly: true,
+				maxAge: 0,
+			},
+			refreshOption: {
+				domain: 'localhost',
+				path: '/',
+				httpOnly: true,
+				maxAge: 0,
+			},
+		}
 	}
 }
