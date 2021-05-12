@@ -13,7 +13,7 @@ export class AuthService {
 		private configService: ConfigService
 	) {}
 
-	public getCookieWithJwtAccessToken(uid: string) {
+	public getAccessToken(uid: string) {
 		const payload: AccessTokenPayload = { uid }
 		const token = this.jwtService.sign(payload, {
 			secret: this.configService.get('JWT_ACCESS_TOKEN_SECRET'),
@@ -24,12 +24,6 @@ export class AuthService {
 
 		return {
 			accessToken: token,
-			domain: 'localhost',
-			path: '/',
-			httpOnly: true,
-			maxAge:
-				Number(this.configService.get('JWT_ACCESS_TOKEN_EXPIRATION_TIME')) *
-				1000,
 		}
 	}
 

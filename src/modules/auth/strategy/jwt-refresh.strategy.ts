@@ -1,8 +1,10 @@
 import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { PassportStrategy } from '@nestjs/passport'
-import { ExtractJwt, Strategy } from 'passport-jwt'
+import { ExtractJwt, Strategy, VerifiedCallback } from 'passport-jwt'
 import { UserService } from 'src/modules/user/user.service'
+import { RefreshTokenPayload } from '../interface/token.interface'
+import { Request } from 'express'
 
 @Injectable()
 export class JwtRefreshStrategy extends PassportStrategy(
@@ -22,9 +24,19 @@ export class JwtRefreshStrategy extends PassportStrategy(
 		})
 	}
 
-	async validate(req) {
-		const user = req.user
+	async validate(
+		req: Request,
+		payload: RefreshTokenPayload,
+		done: VerifiedCallback
+	) {
+		try {
+			const user = await this.userService.findOne({ id: payload.uid })
 
-		return user
+			req.user = user
+
+			return done(null, user)
+		} catch (error) {
+			return done(error)
+		}
 	}
 }

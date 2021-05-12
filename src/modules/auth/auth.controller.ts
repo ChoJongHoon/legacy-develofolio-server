@@ -2,6 +2,7 @@ import {
 	Controller,
 	Get,
 	HttpStatus,
+	Post,
 	Redirect,
 	Req,
 	Res,
@@ -35,29 +36,36 @@ export default class AuthController {
 	) {
 		const user = req.user
 
-		const {
-			accessToken,
-			...accessOption
-		} = this.authService.getCookieWithJwtAccessToken(user.id)
+		const { accessToken } = this.authService.getAccessToken(user.id)
 
 		const {
 			refreshToken,
 			...refreshOption
 		} = this.authService.getCookieWithJwtRefreshToken(user.id)
 
-		res.cookie('accessToken', accessToken, accessOption)
 		res.cookie('refreshToken', refreshToken, refreshOption)
 
 		return {
-			url: this.configService.get('CLIENT'),
+			url: `${this.configService.get('CLIENT')}/login/success/${accessToken}`,
 		}
 	}
 
 	@UseGuards(JwtRefreshGuard)
-	@Get('refresh')
+	@Post('refresh')
 	refresh(@Req() req: Request, @Res({ passthrough: true }) res: Response) {
 		const user = req.user
 
-		return user
+		const { accessToken } = this.authService.getAccessToken(user.id)
+
+		const {
+			refreshToken,
+			...refreshOption
+		} = this.authService.getCookieWithJwtRefreshToken(user.id)
+
+		res.cookie('refreshToken', refreshToken, refreshOption)
+
+		return {
+			accessToken,
+		}
 	}
 }

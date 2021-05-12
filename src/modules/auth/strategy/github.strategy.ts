@@ -30,7 +30,7 @@ export class GithubStrategy extends PassportStrategy(Strategy, 'github') {
 			provider: UserProvider.github,
 			providedId: id,
 		})
-		console.log(`user`, user)
+
 		done(null, user)
 	}
 }

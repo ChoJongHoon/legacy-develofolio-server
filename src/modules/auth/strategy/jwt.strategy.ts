@@ -1,4 +1,4 @@
-import { ExtractJwt, Strategy } from 'passport-jwt'
+import { ExtractJwt, Strategy, VerifiedCallback } from 'passport-jwt'
 import { PassportStrategy } from '@nestjs/passport'
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
@@ -12,23 +12,19 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
 		private userService: UserService
 	) {
 		super({
-			jwtFromRequest: ExtractJwt.fromExtractors([
-				(request) => {
-					return request?.cookies?.accessToken
-				},
-			]),
+			jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
 			ignoreExpiration: false,
 			secretOrKey: configService.get('JWT_ACCESS_TOKEN_SECRET'),
 		})
 	}
 
-	async validate(payload: AccessTokenPayload) {
+	async validate(payload: AccessTokenPayload, done: VerifiedCallback) {
 		const user = await this.userService.findOne({ id: payload.uid })
 
 		if (!user) {
-			throw new HttpException('Invalid token', HttpStatus.UNAUTHORIZED)
+			return done(new HttpException('Invalid token', HttpStatus.UNAUTHORIZED))
 		}
 
-		return user
+		return done(null, user)
 	}
 }
