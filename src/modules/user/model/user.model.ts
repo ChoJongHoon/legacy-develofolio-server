@@ -1,5 +1,6 @@
 import { Field, ID, ObjectType } from '@nestjs/graphql'
 import { CreateUserInput } from './create-user.input'
+import GraphQLJSON from 'graphql-type-json'
 
 export type UserKey = {
 	id: string
@@ -12,4 +13,7 @@ export class User extends CreateUserInput {
 
 	@Field(/* istanbul ignore next */ () => String)
 	createAt: string
+
+	@Field(/* istanbul ignore next */ () => GraphQLJSON)
+	content?: any
 }

@@ -56,4 +56,14 @@ export class UserService {
 
 		return user
 	}
+
+	async getContentById(id: string) {
+		const [user] = await this.model
+			.query('id')
+			.eq(id)
+			.attribute('content')
+			.exec()
+
+		return user.content
+	}
 }

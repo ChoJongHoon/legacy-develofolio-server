@@ -5,6 +5,7 @@ import { CreateUserInput } from './model/create-user.input'
 import { UseGuards } from '@nestjs/common'
 import { GqlAuthGuard } from '../auth/guard/gql-auth.guard'
 import { CurrentUser } from './decorator/current-user.decorator'
+import GraphQLJSON from 'graphql-type-json'
 
 @Resolver()
 export class UserResolver {
@@ -24,5 +25,11 @@ export class UserResolver {
 	@UseGuards(GqlAuthGuard)
 	me(@CurrentUser() user: User) {
 		return this.userService.findOne({ id: user.id })
+	}
+
+	@Query(/* istanbul ignore next */ () => GraphQLJSON, { nullable: true })
+	@UseGuards(GqlAuthGuard)
+	myContent(@CurrentUser() user: User) {
+		return this.userService.getContentById(user.id)
 	}
 }
