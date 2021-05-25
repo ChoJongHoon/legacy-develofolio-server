@@ -3,6 +3,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config'
 import { GraphQLModule } from '@nestjs/graphql'
 import { DynamooseModule } from 'nestjs-dynamoose'
 import { AuthModule } from './modules/auth/auth.module'
+import { BucketModule } from './modules/bucket/bucket.module'
 import { UserModule } from './modules/user/user.module'
 
 @Module({
@@ -26,14 +27,14 @@ import { UserModule } from './modules/user/user.module'
 		}),
 		DynamooseModule.forRootAsync({
 			useFactory: async (configService: ConfigService) => ({
-				local: false,
+				local: true,
 				aws: {
 					accessKeyId: configService.get('AWS_ACCESS_KEY_ID'),
 					secretAccessKey: configService.get('AWS_SECRET_ACCESS_KEY'),
 					region: 'ap-northeast-2',
 				},
 				model: {
-					create: true,
+					create: false,
 					prefix: `${configService.get('SERVICE')}-${configService.get(
 						'STAGE'
 					)}-`,
@@ -44,6 +45,7 @@ import { UserModule } from './modules/user/user.module'
 		}),
 		AuthModule,
 		UserModule,
+		BucketModule,
 	],
 })
 export class AppModule {}

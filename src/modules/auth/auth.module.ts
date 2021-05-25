@@ -1,4 +1,4 @@
-import { HttpModule, Module } from '@nestjs/common'
+import { Module } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { JwtModule } from '@nestjs/jwt'
 import { PassportModule } from '@nestjs/passport'
@@ -12,7 +12,6 @@ import { JwtStrategy } from './strategy/jwt.strategy'
 
 @Module({
 	imports: [
-		HttpModule,
 		UserModule,
 		PassportModule,
 		JwtModule.registerAsync({

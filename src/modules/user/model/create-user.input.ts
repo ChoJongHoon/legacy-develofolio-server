@@ -14,4 +14,8 @@ export class CreateUserInput {
 	@IsString()
 	@Field(/* istanbul ignore next */ () => String)
 	providedId: string
+
+	@IsString()
+	@Field(/* istanbul ignore next */ () => String)
+	thumbnail?: string
 }

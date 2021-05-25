@@ -8,6 +8,19 @@ Resources:
       AttributeDefinitions:
         - AttributeName: id
           AttributeType: S
+        - AttributeName: providedId
+          AttributeType: S
+        - AttributeName: provider
+          AttributeType: S
       KeySchema:
         - AttributeName: id
           KeyType: HASH
+      GlobalSecondaryIndexes:
+        - IndexName: providedIdGlobalIndex
+          KeySchema:
+            - AttributeName: providedId
+              KeyType: HASH
+            - AttributeName: provider
+              KeyType: RANGE
+          Projection:
+            ProjectionType: ALL

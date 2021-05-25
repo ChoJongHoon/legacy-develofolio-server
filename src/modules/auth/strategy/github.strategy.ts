@@ -24,11 +24,14 @@ export class GithubStrategy extends PassportStrategy(Strategy, 'github') {
 		profile: Profile,
 		done: (err: any, user: any, info?: any) => void
 	) {
-		const { id } = profile
+		const { id, photos } = profile
+
+		const avatar = photos.length > 0 ? photos[0].value : undefined
 
 		const user = await this.userService.findOrCreate({
 			provider: UserProvider.github,
 			providedId: id,
+			thumbnail: avatar,
 		})
 
 		done(null, user)

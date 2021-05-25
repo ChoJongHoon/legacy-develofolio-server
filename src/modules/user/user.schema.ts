@@ -18,6 +18,10 @@ export const UserSchema = new Schema({
 	username: {
 		type: String,
 	},
+	thumbnail: {
+		type: String,
+		required: false,
+	},
 	createAt: {
 		type: String,
 	},
