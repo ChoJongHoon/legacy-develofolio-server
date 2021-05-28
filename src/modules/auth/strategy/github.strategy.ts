@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { PassportStrategy } from '@nestjs/passport'
 import { Strategy, Profile } from 'passport-github'
-import { UserProvider } from 'src/modules/user/enum/user-provider.enum'
 import { UserService } from 'src/modules/user/user.service'
 
 @Injectable()
@@ -29,9 +28,8 @@ export class GithubStrategy extends PassportStrategy(Strategy, 'github') {
 		const avatar = photos.length > 0 ? photos[0].value : undefined
 
 		const user = await this.userService.findOrCreate({
-			provider: UserProvider.github,
-			providedId: id,
-			thumbnail: avatar,
+			githubId: id,
+			profile: avatar,
 		})
 
 		done(null, user)

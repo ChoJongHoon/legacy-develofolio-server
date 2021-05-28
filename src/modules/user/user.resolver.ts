@@ -32,4 +32,14 @@ export class UserResolver {
 	myContent(@CurrentUser() user: User) {
 		return this.userService.getContentById(user.id)
 	}
+
+	@Mutation(/* istanbul ignore next */ () => GraphQLJSON, { nullable: true })
+	@UseGuards(GqlAuthGuard)
+	setContent(
+		@CurrentUser() user: User,
+		@Args('content', { type: /* istanbul ignore next */ () => GraphQLJSON })
+		content: any
+	) {
+		return this.userService.setContent(user.id, content)
+	}
 }

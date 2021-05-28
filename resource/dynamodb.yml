@@ -8,19 +8,15 @@ Resources:
       AttributeDefinitions:
         - AttributeName: id
           AttributeType: S
-        - AttributeName: providedId
-          AttributeType: S
-        - AttributeName: provider
+        - AttributeName: githubId
           AttributeType: S
       KeySchema:
         - AttributeName: id
           KeyType: HASH
       GlobalSecondaryIndexes:
-        - IndexName: providedIdGlobalIndex
+        - IndexName: providerIndex
           KeySchema:
-            - AttributeName: providedId
+            - AttributeName: githubId
               KeyType: HASH
-            - AttributeName: provider
-              KeyType: RANGE
           Projection:
             ProjectionType: ALL

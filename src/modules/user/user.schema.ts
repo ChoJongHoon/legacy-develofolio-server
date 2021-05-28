@@ -6,14 +6,11 @@ export const UserSchema = new Schema(
 			type: String,
 			hashKey: true,
 		},
-		provider: {
-			type: String,
-		},
-		providedId: {
+		githubId: {
 			type: String,
 			index: {
+				name: 'providerIndex',
 				global: true,
-				rangeKey: 'provider',
 			},
 		},
 		username: {
@@ -24,7 +21,13 @@ export const UserSchema = new Schema(
 			required: false,
 		},
 		content: {
-			type: Object,
+			type: Array,
+			schema: [
+				{
+					type: Object,
+				},
+			],
+			required: false,
 		},
 		createAt: {
 			type: String,
