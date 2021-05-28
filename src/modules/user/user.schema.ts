@@ -16,7 +16,7 @@ export const UserSchema = new Schema(
 		username: {
 			type: String,
 		},
-		thumbnail: {
+		profile: {
 			type: String,
 			required: false,
 		},
