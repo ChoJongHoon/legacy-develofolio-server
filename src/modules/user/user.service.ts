@@ -4,6 +4,7 @@ import { CreateUserInput } from './model/create-user.input'
 import { InjectModel, Model } from 'nestjs-dynamoose'
 import { v4 as uuid } from 'uuid'
 import { BucketService } from '../bucket/bucket.service'
+import { UpdateUserInput } from './model/update-user.input'
 
 @Injectable()
 export class UserService {
@@ -52,17 +53,11 @@ export class UserService {
 		return user
 	}
 
-	async getContentById(id: string) {
-		const [user] = await this.model
-			.query('id')
-			.eq(id)
-			.attribute('content')
-			.exec()
-
-		return user.content
+	async update(key: UserKey, input: UpdateUserInput) {
+		return await this.model.update(key, input)
 	}
 
 	async setContent(id: string, content) {
-		this.model.update({ id }, { content })
+		await this.model.update({ id }, { content })
 	}
 }

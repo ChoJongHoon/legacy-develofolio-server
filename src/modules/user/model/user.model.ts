@@ -14,6 +14,6 @@ export class User extends CreateUserInput {
 	@Field(/* istanbul ignore next */ () => String)
 	createAt: string
 
-	@Field(/* istanbul ignore next */ () => GraphQLJSON)
+	@Field(/* istanbul ignore next */ () => GraphQLJSON, { nullable: true })
 	content?: any
 }

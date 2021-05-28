@@ -5,10 +5,10 @@ import { IsString } from 'class-validator'
 @InterfaceType('BaseUser')
 export class CreateUserInput {
 	@IsString()
-	@Field(/* istanbul ignore next */ () => String)
+	@Field(/* istanbul ignore next */ () => String, { nullable: true })
 	githubId?: string
 
 	@IsString()
-	@Field(/* istanbul ignore next */ () => String)
+	@Field(/* istanbul ignore next */ () => String, { nullable: true })
 	profile?: string
 }

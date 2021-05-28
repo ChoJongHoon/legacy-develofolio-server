@@ -5,7 +5,7 @@ import { CreateUserInput } from './model/create-user.input'
 import { UseGuards } from '@nestjs/common'
 import { GqlAuthGuard } from '../auth/guard/gql-auth.guard'
 import { CurrentUser } from './decorator/current-user.decorator'
-import GraphQLJSON from 'graphql-type-json'
+import { UpdateUserInput } from './model/update-user.input'
 
 @Resolver()
 export class UserResolver {
@@ -21,25 +21,15 @@ export class UserResolver {
 		return this.userService.create(input)
 	}
 
+	@Mutation(/* istanbul ignore next */ () => User)
+	@UseGuards(GqlAuthGuard)
+	updateUser(@CurrentUser() user: User, @Args('input') input: UpdateUserInput) {
+		return this.userService.update({ id: user.id }, input)
+	}
+
 	@Query(/* istanbul ignore next */ () => User)
 	@UseGuards(GqlAuthGuard)
 	me(@CurrentUser() user: User) {
-		return this.userService.findOne({ id: user.id })
-	}
-
-	@Query(/* istanbul ignore next */ () => GraphQLJSON, { nullable: true })
-	@UseGuards(GqlAuthGuard)
-	myContent(@CurrentUser() user: User) {
-		return this.userService.getContentById(user.id)
-	}
-
-	@Mutation(/* istanbul ignore next */ () => GraphQLJSON, { nullable: true })
-	@UseGuards(GqlAuthGuard)
-	setContent(
-		@CurrentUser() user: User,
-		@Args('content', { type: /* istanbul ignore next */ () => GraphQLJSON })
-		content: any
-	) {
-		return this.userService.setContent(user.id, content)
+		return user
 	}
 }
