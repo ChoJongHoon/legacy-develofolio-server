@@ -43,8 +43,8 @@ export class UserService {
 				src = filename
 			}
 			user = await this.model.create({
+				id: userId,
 				githubId,
-				id: uuid(),
 				createAt: new Date().toISOString(),
 				profile: src,
 			})
