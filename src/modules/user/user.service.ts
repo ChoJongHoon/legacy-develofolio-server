@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import { User, UserKey } from './model/user.model'
 import { CreateUserInput } from './model/create-user.input'
-import { InjectModel, Model } from 'nestjs-dynamoose'
+import { InjectModel, Model, UpdatePartial } from 'nestjs-dynamoose'
 import { v4 as uuid } from 'uuid'
 import { BucketService } from '../bucket/bucket.service'
 import { UpdateUserInput } from './model/update-user.input'
@@ -54,10 +54,19 @@ export class UserService {
 	}
 
 	async update(key: UserKey, input: UpdateUserInput) {
-		return await this.model.update(key, input)
-	}
-
-	async setContent(id: string, content) {
-		await this.model.update({ id }, { content })
+		const updateValues: UpdatePartial<User> = {}
+		const removeValues: Partial<User> = {}
+		for (const key of Object.keys(input) as Array<keyof typeof input>) {
+			const value = input[key]
+			if (value === null) {
+				removeValues[key] = null
+			} else {
+				updateValues[key] = value
+			}
+		}
+		return await this.model.update(key, {
+			...updateValues,
+			$REMOVE: removeValues,
+		})
 	}
 }
