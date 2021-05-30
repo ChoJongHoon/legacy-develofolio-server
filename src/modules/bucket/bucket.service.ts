@@ -1,6 +1,6 @@
 import { HttpService, Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
-import * as AWS from 'aws-sdk'
+import { S3 } from 'aws-sdk'
 import mimeTypes from 'mime-types'
 import tmp from 'tmp'
 import fs from 'fs'
@@ -8,20 +8,13 @@ import { v4 as uuid } from 'uuid'
 
 @Injectable()
 export class BucketService {
-	s3: AWS.S3
-
 	constructor(
 		private readonly configService: ConfigService,
 		private readonly httpService: HttpService
-	) {
-		this.s3 = new AWS.S3({
-			region: configService.get('AWS_REGION'),
-			accessKeyId: configService.get('AWS_ACCESS_KEY_ID'),
-			secretAccessKey: configService.get('AWS_SECRET_ACCESS_KEY'),
-		})
-	}
+	) {}
 
 	async syncProfileImage(url: string, id: string) {
+		const s3 = new S3()
 		const response = await this.httpService
 			.get(encodeURI(url), {
 				responseType: 'stream',
@@ -47,9 +40,9 @@ export class BucketService {
 		const key = `images/${id}/profile/${filename}`
 
 		// upload
-		await this.s3
+		await s3
 			.upload({
-				Bucket: 'develofoilo-resource',
+				Bucket: this.configService.get('AWS_S3_BUCKET'),
 				Key: key,
 				Body: stream,
 				ContentType: contentType,
@@ -59,5 +52,30 @@ export class BucketService {
 		tmpObject.removeCallback()
 
 		return { filename }
+	}
+
+	getContentType(filename: string) {
+		const contentType = mimeTypes.lookup(filename)
+
+		return contentType || ''
+	}
+
+	createUploadUrl(path: string, contentType?: string) {
+		const s3 = new S3()
+		return s3.getSignedUrl('putObject', {
+			Bucket: this.configService.get('AWS_S3_BUCKET'),
+			Key: path,
+			ContentType: contentType,
+			Expires: 60 * 60,
+		})
+	}
+
+	generateFilename(filename: string) {
+		const id = uuid()
+		const extention = filename
+			.substr(filename.lastIndexOf('.') + 1)
+			.toLowerCase()
+
+		return `${id}.${extention}`
 	}
 }
