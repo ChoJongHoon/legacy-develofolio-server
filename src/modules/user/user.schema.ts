@@ -29,6 +29,10 @@ export const UserSchema = new Schema(
 			],
 			required: false,
 		},
+		socialLinks: {
+			type: Array,
+			schema: [{ type: Object, schema: { name: String, link: String } }],
+		},
 		createAt: {
 			type: String,
 		},
