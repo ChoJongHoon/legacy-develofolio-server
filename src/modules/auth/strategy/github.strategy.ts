@@ -49,7 +49,7 @@ export class GithubStrategy extends PassportStrategy(Strategy, 'github') {
 				id: userId,
 				githubId: id,
 				profile: src,
-				socialLinks: [{ name: 'github', link: profileUrl }],
+				socialLinks: { github: profileUrl },
 			})
 		}
 

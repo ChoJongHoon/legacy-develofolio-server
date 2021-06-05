@@ -1,6 +1,6 @@
 import { Field, ID, ObjectType } from '@nestjs/graphql'
 import GraphQLJSON from 'graphql-type-json'
-import { SocialLink } from './social-link'
+import { SocialLinks } from './social-link'
 
 export type UserKey = {
 	id: string
@@ -23,6 +23,6 @@ export class User {
 	@Field(/* istanbul ignore next */ () => GraphQLJSON, { nullable: true })
 	content?: any
 
-	@Field(/* istanbul ignore next */ () => [SocialLink])
-	socialLinks: SocialLink[]
+	@Field(/* istanbul ignore next */ () => SocialLinks)
+	socialLinks: SocialLinks
 }

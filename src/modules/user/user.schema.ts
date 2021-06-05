@@ -30,8 +30,14 @@ export const UserSchema = new Schema(
 			required: false,
 		},
 		socialLinks: {
-			type: Array,
-			schema: [{ type: Object, schema: { name: String, link: String } }],
+			type: Object,
+			schema: {
+				github: { type: String, required: false },
+				stackOverflow: { type: String, required: false },
+				facebook: { type: String, required: false },
+				twitter: { type: String, required: false },
+			},
+			required: false,
 		},
 		createAt: {
 			type: String,

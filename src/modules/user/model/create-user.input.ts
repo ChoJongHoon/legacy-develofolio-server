@@ -1,6 +1,6 @@
 import { Field, InputType } from '@nestjs/graphql'
 import { IsString } from 'class-validator'
-import { SocialLink } from './social-link'
+import { SocialLinks } from './social-link'
 
 @InputType()
 export class CreateUserInput {
@@ -16,6 +16,6 @@ export class CreateUserInput {
 	@Field(/* istanbul ignore next */ () => String, { nullable: true })
 	profile?: string
 
-	@Field(/* istanbul ignore next */ () => [SocialLink], { nullable: true })
-	socialLinks?: SocialLink[]
+	@Field(/* istanbul ignore next */ () => SocialLinks, { nullable: true })
+	socialLinks?: SocialLinks
 }

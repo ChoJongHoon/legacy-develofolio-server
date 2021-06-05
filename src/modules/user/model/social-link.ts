@@ -2,11 +2,20 @@ import { Field, ObjectType } from '@nestjs/graphql'
 import { IsString } from 'class-validator'
 
 @ObjectType()
-export class SocialLink {
+export class SocialLinks {
 	@IsString()
-	@Field(/* istanbul ignore next */ () => String)
-	name: string
+	@Field(/* istanbul ignore next */ () => String, { nullable: true })
+	github?: string
 
-	@Field(/* istanbul ignore next */ () => String)
-	link: string
+	@IsString()
+	@Field(/* istanbul ignore next */ () => String, { nullable: true })
+	stackOverflow?: string
+
+	@IsString()
+	@Field(/* istanbul ignore next */ () => String, { nullable: true })
+	facebook?: string
+
+	@IsString()
+	@Field(/* istanbul ignore next */ () => String, { nullable: true })
+	twitter?: string
 }
