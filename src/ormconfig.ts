@@ -12,9 +12,9 @@ const ormconfig: ConnectionOptions = {
 	password: process.env.DB_PASSWORD,
 	database: process.env.DB_NAME,
 	logging: true,
-	entities: ['src/**/*.model.ts'],
-	migrations: ['src/migration/*.ts'],
-	subscribers: ['src/**/*.subscriber.ts'],
+	entities: ['dist/**/*.model.js'],
+	migrations: ['dist/migration/*.js'],
+	subscribers: ['dist/**/*.subscriber.js'],
 	cli: {
 		migrationsDir: 'src/migration',
 	},

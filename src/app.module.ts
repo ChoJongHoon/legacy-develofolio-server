@@ -8,6 +8,7 @@ import * as ormconfig from './ormconfig'
 	imports: [
 		TypeOrmModule.forRoot({
 			...ormconfig,
+			entities: null,
 			autoLoadEntities: true,
 		}),
 		GraphQLModule.forRoot({
