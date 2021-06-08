@@ -14,20 +14,16 @@ export class User {
 	@PrimaryGeneratedColumn('uuid')
 	id: string
 
-	@Field(() => String)
-	@Column({ type: 'varchar', length: 255 })
-	name: string
-
-	@Field(() => String)
-	@Column({ type: 'varchar', length: 255 })
+	@Field(() => String, { nullable: true })
+	@Column({ type: 'varchar', length: 255, nullable: true })
 	email: string
 
-	@Field(() => Date)
-	@Column({ name: 'email_verified', type: 'timestamptz' })
+	@Field(() => Date, { nullable: true })
+	@Column({ name: 'email_verified', type: 'timestamptz', nullable: true })
 	emailVerified: Date
 
-	@Field(() => String)
-	@Column({ type: 'text' })
+	@Field(() => String, { nullable: true })
+	@Column({ type: 'text', nullable: true })
 	image: string
 
 	@Field(() => Date)
