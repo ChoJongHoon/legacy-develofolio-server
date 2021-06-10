@@ -3,9 +3,11 @@ import {
 	Column,
 	CreateDateColumn,
 	Entity,
+	OneToMany,
 	PrimaryGeneratedColumn,
 	UpdateDateColumn,
 } from 'typeorm'
+import { Account } from '../account/account.model'
 
 @ObjectType()
 @Entity({ name: 'users' })
@@ -41,4 +43,8 @@ export class User {
 		default: () => 'CURRENT_TIMESTAMP',
 	})
 	updatedAt: Date
+
+	@Field(() => [Account])
+	@OneToMany(() => Account, (account) => account.user)
+	account: Account[]
 }

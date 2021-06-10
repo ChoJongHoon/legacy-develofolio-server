@@ -3,9 +3,12 @@ import {
 	Column,
 	CreateDateColumn,
 	Entity,
+	JoinColumn,
+	ManyToOne,
 	PrimaryGeneratedColumn,
 	UpdateDateColumn,
 } from 'typeorm'
+import { User } from '../user/user.model'
 
 @ObjectType()
 @Entity({ name: 'accounts' })
@@ -21,6 +24,11 @@ export class Account {
 	@Field(() => String)
 	@Column({ name: 'user_id', type: 'uuid' })
 	userId: string
+
+	@Field(() => User)
+	@ManyToOne(() => User, (user) => user.account)
+	@JoinColumn({ name: 'user_id' })
+	user?: User
 
 	@Field(() => String)
 	@Column({ name: 'provider_type', type: 'varchar', length: 255 })

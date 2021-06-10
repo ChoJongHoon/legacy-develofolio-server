@@ -7,4 +7,4 @@ import { Account } from './account.model'
 	controllers: [],
 	providers: [],
 })
-export class UserModule {}
+export class AccountModule {}
